@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+# `bin/rails db:rollback` don’t consistently modify both the development and 
+# test schema. This can result in a test schema that is not the same as what's 
+# described in the migration file, which can cause some confusing test 
+# behavior. Rather than document this problem, let's use this script to handle 
+# rolling migrations back.
+
+echo "[ bin/db-rollback ] rolling back development schema"
+bin/rails db:rollback RAILS_ENV=development
+
+echo "[ bin/db-rollback ] rolling back test schema"
+bin/rails db:rollback RAILS_ENV=test
