@@ -9,7 +9,7 @@ set -e
 # applying migrations.
 
 echo "[ bin/db-migrate ] migrating development schema"
-bin/rails db:migrate
+bin/rails db:migrate RAILS_ENV=development
 
 echo "[ bin/db-migrate ] migrating test schema"
 bin/rails db:migrate RAILS_ENV=test

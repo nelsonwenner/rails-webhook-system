@@ -9,7 +9,7 @@ set -e
 # rolling migrations back.
 
 echo "[ bin/db-rollback ] rolling back development schema"
-bin/rails db:rollback
+bin/rails db:rollback RAILS_ENV=development
 
 echo "[ bin/db-rollback ] rolling back test schema"
 bin/rails db:rollback RAILS_ENV=test
