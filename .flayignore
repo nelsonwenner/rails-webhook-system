@@ -1,0 +1,5 @@
+test/**/*
+spec/**/*
+db/**/*
+vendor/**/*
+config/environments/*

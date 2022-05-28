@@ -1,0 +1,13 @@
+---
+
+# References:
+# https://github.com/prontolabs/pronto#configuration
+
+all:
+  exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+    - 'bin/**/*'
+    - 'lib/tasks/**/*'
+
+verbose: true

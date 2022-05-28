@@ -1,0 +1,28 @@
+# See: https://github.com/troessner/reek#configuration-file
+detectors:
+  UtilityFunction:
+    public_methods_only: true
+  IrresponsibleModule:
+    enabled: false
+
+directories:
+  "db/migrate":
+    UncommunicativeVariableName:
+      enabled: false
+    IrresponsibleModule:
+      enabled: false
+    FeatureEnvy:
+      enabled: false
+    TooManyStatements:
+      enabled: false
+  "app/controllers":
+    InstanceVariableAssumption:
+      enabled: false
+    NestedIterators:
+      max_allowed_nesting: 2
+    TooManyStatements:
+      max_statements: 10
+
+exclude_paths:
+  - test
+  - spec

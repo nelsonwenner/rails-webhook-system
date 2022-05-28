@@ -32,10 +32,26 @@ gem "bootsnap", require: false
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem "debug", platforms: %i[mri mingw x64_mingw]
 
   # Use RSpec for testing Ruby code
   gem "rspec-rails", "~> 5.0"
+
+  # Ruby style guide, linter, and formatter. An opinionated wrapper around Rubocop.
+  gem "standard", require: false
+
+  # Reek is a tool that examines Ruby classes, modules and methods and reports any Code Smells it finds.
+  gem "reek", require: false
+
+  # Flay analyzes code for structural similarities. Differences in literal values, variable, class, method names,
+  # whitespace, programming style, braces vs do/end, etc are all ignored.
+  gem "flay", require: false
+
+  # Pronto runs analysis quickly by checking only the relevant code changes.
+  gem "pronto", "~> 0.11"
+  gem "pronto-reek", "~> 0.11", require: false
+  gem "pronto-standardrb", "~> 0.1", require: false
+  gem "pronto-flay", "~> 0.11", require: false
 end
 
 group :development do
@@ -55,4 +71,4 @@ group :test do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
+gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
