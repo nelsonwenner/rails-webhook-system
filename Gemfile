@@ -41,6 +41,12 @@ end
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   gem "spring"
+
+  # Guard automates various tasks by running custom rules whenever file or directories are modified. [https://github.com/guard/guard]
+  gem "guard", "~> 2.18", require: false
+
+  # Guard::RSpec automatically run your specs (much like autotest). [https://github.com/guard/guard-rspec]
+  gem "guard-rspec", "~> 4.7", require: false
 end
 
 group :test do
