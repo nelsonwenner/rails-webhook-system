@@ -5,6 +5,7 @@ class CreateWebhookEvents < ActiveRecord::Migration[7.0]
 
       t.string :event, null: false
       t.text :payload, null: false
+      t.jsonb :response, default: {}
 
       t.timestamps null: false
     end
