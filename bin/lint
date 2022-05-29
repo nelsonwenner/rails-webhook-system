@@ -43,7 +43,7 @@ if [ "$(git rev-parse --abbrev-ref HEAD)" == "main" ] || [ "$(git branch --show-
   echo "[ bin/lint ] ℹ️  Running on 'main' branch."
   lint_local_main_branch
 else
-  if [ "$1" == "--all" ] || [ "$1" == "-a" ]; then
+  if [ "$1" == "--all" ]; then
     echo "[ bin/lint ] ℹ️  Running on a topic branch, but analyzing all files (as requested by '$1')."
     lint_local_main_branch
   else
