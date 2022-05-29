@@ -3,6 +3,11 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.1.0"
 
+# We list this gem first and require it via "rails-now" so as to load all environment variables immediattely, even
+# before Rails or any other gems are loaded. This way any gem that needs access to environment variables can do so
+# as soon as it needs them. More info: https://github.com/bkeepers/dotenv#note-on-load-order
+gem "dotenv-rails", require: "dotenv/rails-now", groups: [:development, :test]
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.0.3"
 
