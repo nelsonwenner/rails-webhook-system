@@ -24,45 +24,22 @@ gem "sidekiq", "~> 6.4.2"
 gem "redis", "~> 4.6.0"
 
 # An easy-to-use client library for making requests
-gem 'http', "5.0.0"
-
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-# gem "jbuilder"
-
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
-
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-# gem "bcrypt", "~> 3.1.7"
+gem "http", "5.0.0"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
-
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem "rack-cors"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[mri mingw x64_mingw]
 
+  # A Ruby static code analyzer and formatter, based on the community Ruby style guide.
+  gem 'rubocop', require: false
+  gem 'rubocop-rails', require: false
+  gem 'rubocop-rspec', require: false
+
   # Use RSpec for testing Ruby code
   gem "rspec-rails", "~> 5.0"
-
-  # Ruby style guide, linter, and formatter. An opinionated wrapper around Rubocop.
-  gem "standard", require: false
-
-  # Reek is a tool that examines Ruby classes, modules and methods and reports any Code Smells it finds.
-  gem "reek", require: false
-
-  # Flay analyzes code for structural similarities. Differences in literal values, variable, class, method names,
-  # whitespace, programming style, braces vs do/end, etc are all ignored.
-  gem "flay", require: false
-
-  # Pronto runs analysis quickly by checking only the relevant code changes.
-  gem "pronto", "~> 0.11"
-  gem "pronto-reek", "~> 0.11", require: false
-  gem "pronto-standardrb", "~> 0.1", require: false
-  gem "pronto-flay", "~> 0.11", require: false
 end
 
 group :development do
