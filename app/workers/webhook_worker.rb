@@ -1,24 +1,22 @@
 # frozen_string_literal: true
 
-require "http"
+require 'http'
 
-class WebhookWorker
-  include Sidekiq::Worker
+class WebhookWorker < ApplicationWorker
+  class FailedRequestError < StandardError; end
 
-  def self.perform(event_id:)
-    webhook_event = WebhookEvent.find_by(id: event_id)
+  def initialize(event_id:)
+    @event_id = event_id
+  end
 
-    return if webhook_event.blank?
-
-    webhook_endpoint = webhook_event.webhook_endpoint
-
-    return if webhook_endpoint.blank?
+  def perform
+    return if webhook_event.blank? || webhook_endpoint.blank?
 
     # Send the webhook request with a 30 second timeout.
     response = HTTP.timeout(30)
       .headers(
-        "User-Agent": "webhook_system/1.0",
-        "Content-Type": "application/json"
+        'User-Agent': 'webhook_system/1.0',
+        'Content-Type': 'application/json'
       )
       .post(
         webhook_endpoint.url,
@@ -30,26 +28,27 @@ class WebhookWorker
 
     # Store the webhook response
     webhook_event.update(response: {
-      headers: response.headers.to_h,
-      code: response.code.to_i,
-      body: response.body.to_s
-    })
-    
-    raise FailedRequestError unless response.status.success?
-    
-  rescue HTTP::TimeoutError
-    # This error means the webhook endpoint timed out. We can either
-    # raise a failed request error to trigger a retry, or leave it
-    # as-is and consider timeouts terminal. We'll do the latter.
-    webhook_event.update(response: {error: 'TIMEOUT_ERROR'})
+                           headers: response.headers.to_h,
+                           code: response.code.to_i,
+                           body: response.body.to_s
+                         })
 
+    raise FailedRequestError unless response.status.success?
+  rescue HTTP::TimeoutError
+    webhook_event.update(response: { error: 'TIMEOUT_ERROR' })
   rescue HTTP::ConnectionError
-    webhook_event.update(response: {error: 'CONNECTION_ERROR'})
+    webhook_event.update(response: { error: 'CONNECTION_ERROR' })
   end
 
   private
 
-  # General failed request error that we're going to use to signal
-  # Sidekiq to retry our webhook worker.
-  class FailedRequestError < StandardError; end
+    attr_reader :webhook_event, :webhook_endpoint
+
+    def webhook_event
+      @webhook_event ||= WebhookEvent.find_by(id: @event_id)
+    end
+
+    def webhook_endpoint
+      @webhook_endpoint ||= webhook_event.webhook_endpoint
+    end
 end
