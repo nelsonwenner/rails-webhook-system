@@ -40,6 +40,9 @@ group :development, :test do
 
   # Use RSpec for testing Ruby code
   gem 'rspec-rails', '~> 5.0'
+
+  # We use Factory Bot in place of fixtures to generate realistic test data
+  gem 'factory_bot_rails', '~> 6.2'
 end
 
 group :development do
