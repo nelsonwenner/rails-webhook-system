@@ -1,0 +1,34 @@
+version: "3.7"
+
+services:
+  postgres:
+    container_name: postgres-container
+    image: postgres:11-alpine
+    ports: 
+      - "5432:5432"
+    volumes: 
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+    restart: always
+    networks: 
+      - app-network
+
+  redis:
+    container_name: redis-container
+    image: redis:6.0.9-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    networks: 
+      - app-network
+
+networks:
+  app-network:
+    driver: "bridge"
+
+volumes:
+  postgres: {}
+  redis: {}

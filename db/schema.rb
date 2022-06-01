@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_05_28_183429) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "webhook_endpoints", force: :cascade do |t|
     t.string "url", null: false
     t.datetime "created_at", null: false
@@ -21,6 +24,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_28_183429) do
     t.integer "webhook_endpoint_id", null: false
     t.string "event", null: false
     t.text "payload", null: false
+    t.jsonb "response", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["webhook_endpoint_id"], name: "index_webhook_events_on_webhook_endpoint_id"
