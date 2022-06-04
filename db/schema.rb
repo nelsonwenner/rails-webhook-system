@@ -17,6 +17,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_28_183429) do
   create_table "webhook_endpoints", force: :cascade do |t|
     t.string "url", null: false
     t.jsonb "subscriptions", default: ["*"]
+    t.boolean "enabled", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
