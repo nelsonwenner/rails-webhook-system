@@ -1,9 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe WebhookWorker, type: :worker do
-  let(:subject) { described_class.new(event_id: webhook_event.id) }
+  subject { described_class.new }
 
-  let(:webhook_event) { create(:webhook_event) }
+  let!(:webhook_event) { create(:webhook_event) }
+
+  let(:headers) { double(:headers) }
+  let(:post) { double(:post) }
 
   let(:response) do
     double(
@@ -16,13 +19,17 @@ RSpec.describe WebhookWorker, type: :worker do
     )
   end
 
-  describe '#call' do
+  before do
+    allow(HTTP).to receive(:timeout).and_return(headers)
+    allow(headers).to receive(:headers).and_return(post)
+    allow(post).to receive(:post).and_return(response)
+  end
+
+  describe '#perform' do
     context 'when is valid' do
       it 'update webhook event response with success status' do
-        subject.stub(:fetch_response) { response }
-
         expect {
-          subject.call
+          subject.perform(webhook_event.id)
         }.to change {
           webhook_event.reload.response
         }.from({}).to({ "body" => "success", "code" => 200,
@@ -35,41 +42,49 @@ RSpec.describe WebhookWorker, type: :worker do
       let(:http_timeout_error) { HTTP::TimeoutError }
       let(:http_connection_error) { HTTP::ConnectionError }
 
-      let(:response) do
-        double(
-          headers: {
-            content_type: 'application/json'
-          },
-          body: 'failure',
-          code: 400,
-          status: double(success?: false)
-        )
+      context 'with raise failed request error' do
+        let(:response) do
+          double(
+            headers: {
+              content_type: 'application/json'
+            },
+            body: 'failure',
+            code: 400,
+            status: double(success?: false)
+          )
+        end
+
+        specify do
+          expect { subject.perform(webhook_event.id) }.to raise_error(failed_request_error)
+        end
       end
 
-      it 'raise failed request error' do
-        subject.stub(:fetch_response) { response }
+      context 'with update webhook event response with timeout error' do
+        before do
+          allow(post).to receive(:post).and_raise(http_timeout_error)
+        end
 
-        expect { subject.call }.to raise_error(failed_request_error)
+        specify do
+          expect {
+            subject.perform(webhook_event.id)
+          }.to change {
+            webhook_event.reload.response
+          }.from({}).to({ "error" => "TIMEOUT_ERROR" })
+        end
       end
 
-      it 'update webhook event response with timeout error' do
-        subject.stub(:fetch_response) { raise http_timeout_error }
+      context 'with update webhook event response with connection error' do
+        before do
+          allow(post).to receive(:post).and_raise(http_connection_error)
+        end
 
-        expect {
-          subject.call
-        }.to change {
-          webhook_event.reload.response
-        }.from({}).to({ "error" => "TIMEOUT_ERROR" })
-      end
-
-      it 'update webhook event response with connection error' do
-        subject.stub(:fetch_response) { raise http_connection_error }
-
-        expect {
-          subject.call
-        }.to change {
-          webhook_event.reload.response
-        }.from({}).to({ "error" => "CONNECTION_ERROR" })
+        specify do
+          expect {
+            subject.perform(webhook_event.id)
+          }.to change {
+            webhook_event.reload.response
+          }.from({}).to({ "error" => "CONNECTION_ERROR" })
+        end
       end
     end
   end
