@@ -17,16 +17,16 @@ RSpec.describe WebhookEndpoint, type: :model do
 
     context 'when event is present in the subscriptions' do
       specify do
-        expect(webhook_endpoint.subscribed?(event: event)).to eq(true)
-      end 
+        expect(webhook_endpoint.subscribed?(event: event)).to be(true)
+      end
     end
 
     context "when don't event is present in the subscriptions" do
       let(:event_test) { 'events.noop' }
 
       specify do
-        expect(webhook_endpoint.subscribed?(event: event_test)).to eq(false)
-      end 
+        expect(webhook_endpoint.subscribed?(event: event_test)).to be(false)
+      end
     end
   end
 end
