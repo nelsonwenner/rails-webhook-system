@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe WebhookWorker, type: :worker do
@@ -28,12 +30,12 @@ RSpec.describe WebhookWorker, type: :worker do
   describe '#perform' do
     context 'when is valid' do
       it 'update webhook event response with success status' do
-        expect {
+        expect do
           subject.perform(webhook_event.id)
-        }.to change {
+        end.to change {
           webhook_event.reload.response
-        }.from({}).to({ "body" => "success", "code" => 200,
-                        "headers" => { "content_type" => "application/json" } })
+        }.from({}).to({ 'body' => 'success', 'code' => 200,
+                        'headers' => { 'content_type' => 'application/json' } })
       end
 
       it 'check if event are subscribed' do
@@ -52,7 +54,7 @@ RSpec.describe WebhookWorker, type: :worker do
         let!(:webhook_event) { create(:webhook_event, event: 'events.noop') }
 
         specify do
-          expect(HTTP).to_not receive(:timeout)
+          expect(HTTP).not_to receive(:timeout)
 
           subject.perform(webhook_event.id)
         end
@@ -81,11 +83,11 @@ RSpec.describe WebhookWorker, type: :worker do
         end
 
         specify do
-          expect {
+          expect do
             subject.perform(webhook_event.id)
-          }.to change {
+          end.to change {
             webhook_event.reload.response
-          }.from({}).to({ "error" => "TIMEOUT_ERROR" })
+          }.from({}).to({ 'error' => 'TIMEOUT_ERROR' })
         end
       end
 
@@ -95,11 +97,11 @@ RSpec.describe WebhookWorker, type: :worker do
         end
 
         specify do
-          expect {
+          expect do
             subject.perform(webhook_event.id)
-          }.to change {
+          end.to change {
             webhook_event.reload.response
-          }.from({}).to({ "error" => "CONNECTION_ERROR" })
+          }.from({}).to({ 'error' => 'CONNECTION_ERROR' })
         end
       end
     end

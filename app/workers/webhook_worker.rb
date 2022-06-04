@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "http"
+require 'http'
 
 class WebhookWorker < ApplicationWorker
   class FailedRequestError < StandardError; end
@@ -18,8 +18,8 @@ class WebhookWorker < ApplicationWorker
 
     # Request with a 30 second timeout.
     response = HTTP.timeout(30).headers(
-      "User-Agent": "webhook_system/1.0",
-      "Content-Type": "application/json"
+      'User-Agent': 'webhook_system/1.0',
+      'Content-Type': 'application/json'
     ).post(webhook_endpoint.url,
            body: {
              event: webhook_event.event,
@@ -34,8 +34,8 @@ class WebhookWorker < ApplicationWorker
 
     raise FailedRequestError unless response.status.success?
   rescue HTTP::TimeoutError
-    webhook_event.update(response: { error: "TIMEOUT_ERROR" })
+    webhook_event.update(response: { error: 'TIMEOUT_ERROR' })
   rescue HTTP::ConnectionError
-    webhook_event.update(response: { error: "CONNECTION_ERROR" })
+    webhook_event.update(response: { error: 'CONNECTION_ERROR' })
   end
 end

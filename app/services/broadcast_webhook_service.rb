@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BroadcastWebhookService < ApplicationService
   def initialize(event:, payload:)
     @event = event
@@ -6,7 +8,7 @@ class BroadcastWebhookService < ApplicationService
 
   def call
     WebhookEndpoint.find_each do |webhook_endpoint|
-      # Skip over endpoints that are not subscribed 
+      # Skip over endpoints that are not subscribed
       # to the current event being broadcast.
       next unless webhook_endpoint.subscribed?(event: event)
 

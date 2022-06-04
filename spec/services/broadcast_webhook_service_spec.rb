@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe BroadcastWebhookService, type: :service do
@@ -5,7 +7,7 @@ RSpec.describe BroadcastWebhookService, type: :service do
 
   let!(:webhook_endpoint) { create(:webhook_endpoint) }
   let(:event) { 'events.test' }
-  let(:payload) { { 'test': 1 } }
+  let(:payload) { { test: 1 } }
 
   describe '.call' do
     context 'when is valid' do
@@ -16,16 +18,16 @@ RSpec.describe BroadcastWebhookService, type: :service do
       end
 
       it 'create the webhook event' do
-        expect { 
+        expect do
           subject.call
-        }.to change(WebhookEvent, :count).by(1)
+        end.to change(WebhookEvent, :count).by(1)
       end
 
       context 'with worker' do
         it 'check amount of jobs executed' do
-          expect {
+          expect do
             subject.call
-          }.to change { WebhookWorker.jobs.size }.by(1)
+          end.to change { WebhookWorker.jobs.size }.by(1)
         end
       end
     end
@@ -34,22 +36,22 @@ RSpec.describe BroadcastWebhookService, type: :service do
       let(:event) { 'events.noop' }
 
       it 'check if the event is not subscribed' do
-        expect(WebhookWorker).to_not receive(:perform_async)
+        expect(WebhookWorker).not_to receive(:perform_async)
 
         subject.call
       end
 
       it 'create the webhook event' do
-        expect { 
+        expect do
           subject.call
-        }.to change(WebhookEvent, :count).by(0)
+        end.not_to change(WebhookEvent, :count)
       end
 
       context 'with worker' do
         it 'check amount of jobs executed' do
-          expect {
+          expect do
             subject.call
-          }.to change { WebhookWorker.jobs.size }.by(0)
+          end.not_to change { WebhookWorker.jobs.size }
         end
       end
     end

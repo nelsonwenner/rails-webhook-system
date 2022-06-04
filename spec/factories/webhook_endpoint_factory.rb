@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :webhook_endpoint do
     url { 'http://example.com/foo?bar=baz' }
