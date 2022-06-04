@@ -7,7 +7,7 @@ class BroadcastWebhookService < ApplicationService
   end
 
   def call
-    WebhookEndpoint.find_each do |webhook_endpoint|
+    WebhookEndpoint.enabled.find_each do |webhook_endpoint|
       # Skip over endpoints that are not subscribed
       # to the current event being broadcast.
       next unless webhook_endpoint.subscribed?(event: event)
