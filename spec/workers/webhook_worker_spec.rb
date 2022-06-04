@@ -35,12 +35,28 @@ RSpec.describe WebhookWorker, type: :worker do
         }.from({}).to({ "body" => "success", "code" => 200,
                         "headers" => { "content_type" => "application/json" } })
       end
+
+      it 'check if event are subscribed' do
+        expect(HTTP).to receive(:timeout)
+
+        subject.perform(webhook_event.id)
+      end
     end
 
     context 'when is not valid' do
       let(:failed_request_error) { described_class::FailedRequestError }
       let(:http_timeout_error) { HTTP::TimeoutError }
       let(:http_connection_error) { HTTP::ConnectionError }
+
+      context "check if don't event are subscribed" do
+        let!(:webhook_event) { create(:webhook_event, event: 'events.noop') }
+
+        specify do
+          expect(HTTP).to_not receive(:timeout)
+
+          subject.perform(webhook_event.id)
+        end
+      end
 
       context 'with raise failed request error' do
         let(:response) do

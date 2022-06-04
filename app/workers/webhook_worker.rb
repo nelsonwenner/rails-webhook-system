@@ -14,6 +14,8 @@ class WebhookWorker < ApplicationWorker
 
     return if webhook_endpoint.blank?
 
+    return unless webhook_endpoint.subscribed?(event: webhook_event.event)
+
     # Request with a 30 second timeout.
     response = HTTP.timeout(30).headers(
       "User-Agent": "webhook_system/1.0",
